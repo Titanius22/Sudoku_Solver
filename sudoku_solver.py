@@ -116,8 +116,6 @@ def main1():
             missing_box_set = check_box(3*box[0], 3*box[1])
             if len(missing_box_set) < 1:
                 continue
-            print("missing box values")
-            print(missing_box_set)
             for row in range(3*box[0], 3 + (3*box[0])): #each row in box
                 missing_row_set = check_row(row)
                 if len(missing_row_set) < 1:
