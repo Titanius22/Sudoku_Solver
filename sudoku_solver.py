@@ -115,6 +115,7 @@ def main1():
         for box in box_search_order: #for each box
             missing_box_set = check_box(3*box[0], 3*box[1])
             if len(missing_box_set) < 1:
+                box_search_order.remove(box)
                 continue
             for row in range(3*box[0], 3 + (3*box[0])): #each row in box
                 missing_row_set = check_row(row)
