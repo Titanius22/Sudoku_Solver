@@ -131,13 +131,9 @@ def main1():
     for out_row in input_matrix:
         print(out_row)
     
-    for i in range(0, 6):
+    for i in range(0, 5):
         for box in box_search_order: #for each box
             missing_box_set = check_box(3*box[0], 3*box[1])
-            start_missing_count = found_count
-            # if len(missing_box_set) < 1:
-            #     box_search_order.remove(box)
-            #     continue
             for row in range(3*box[0], 3 + (3*box[0])): #each row in box
                 missing_row_set = check_row(row)
                 if len(missing_row_set) < 1:
@@ -149,11 +145,15 @@ def main1():
                         if len(choices_matrix[row][col]) == 1:
                             #print("found one!!")
                             found_count += 1
-                            input_matrix[row][col] = next(iter(choices_matrix[row][col]))
-            if (len(missing_box_set) - (found_count - start_missing_count) == 1):
+                            buff = next(iter(choices_matrix[row][col]))
+                            input_matrix[row][col] = buff
+                            missing_box_set.remove(buff)
+                            missing_row_set.remove(buff)
+            if (len(missing_box_set) == 1):
                 solve_box(3*box[0], 3*box[1])
                 found_count += 1
-            if (len(missing_box_set) == (found_count - start_missing_count)):
+                missing_box_set.pop()
+            if (len(missing_box_set) == 0):
                 box_search_order.remove(box)
 
 
