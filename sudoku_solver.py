@@ -111,7 +111,7 @@ def main1():
     for out_row in input_matrix:
         print(out_row)
     
-    for i in range(0, 5):
+    for i in range(0, 4):
         for box in box_search_order: #for each box
             missing_box_set = check_box(3*box[0], 3*box[1])
             if len(missing_box_set) < 1:
