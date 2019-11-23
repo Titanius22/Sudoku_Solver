@@ -79,6 +79,27 @@ def check_column(colNum):
     return set(range(1, 10)).difference(set(box))
 
 
+def solve_box(rowNum, colNum):
+    global input_matrix
+
+    startingRow = rowNum - (rowNum%3)
+    startingCol = colNum - (colNum%3)
+
+    missing_loc = []
+    all_nums = [0,1,2,3,4,5,6,7,8,9]
+
+    for row in range(startingRow, startingRow+3):
+        for col in range(startingCol, startingCol+3):
+            all_nums.remove(input_matrix[row][col])
+            if input_matrix[row][col] == 0:
+                missing_loc.append(row)
+                missing_loc.append(col)
+    input_matrix[missing_loc[0]][missing_loc[1]] = all_nums[0]
+
+
+
+
+
 #Variables
 input_matrix = []
 box_search_order = []
@@ -106,17 +127,17 @@ def main1():
                         [2,1],
                         [1,1]
                        ]
-
     
     for out_row in input_matrix:
         print(out_row)
     
-    for i in range(0, 4):
+    for i in range(0, 6):
         for box in box_search_order: #for each box
             missing_box_set = check_box(3*box[0], 3*box[1])
-            if len(missing_box_set) < 1:
-                box_search_order.remove(box)
-                continue
+            start_missing_count = found_count
+            # if len(missing_box_set) < 1:
+            #     box_search_order.remove(box)
+            #     continue
             for row in range(3*box[0], 3 + (3*box[0])): #each row in box
                 missing_row_set = check_row(row)
                 if len(missing_row_set) < 1:
@@ -129,7 +150,16 @@ def main1():
                             #print("found one!!")
                             found_count += 1
                             input_matrix[row][col] = next(iter(choices_matrix[row][col]))
-        
+            if (len(missing_box_set) - (found_count - start_missing_count) == 1):
+                solve_box(3*box[0], 3*box[1])
+                found_count += 1
+            if (len(missing_box_set) == (found_count - start_missing_count)):
+                box_search_order.remove(box)
+
+
+
+
+
         print("Done!!")
         print("zeros: " + str(zero_count))
         print("found: " + str(found_count))
