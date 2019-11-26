@@ -1,6 +1,20 @@
 import csv
 import timeit
 
+
+
+def return_empty_1d_matrix():
+    return [[],[],[],[],[],[],[],[],[]]
+
+
+def return_empty_2d_box_matrix():
+    return [
+              [[],[],[]],
+              [[],[],[]],
+              [[],[],[]]
+             ]
+
+
 def return_empty_2d_matrix():
     return [
               [0,0,0,0,0,0,0,0,0],
@@ -97,6 +111,17 @@ def solve_box(rowNum, colNum):
     input_matrix[missing_loc[0]][missing_loc[1]] = all_nums[0]
 
 
+def solve_columm(colNum):
+
+    missing_loc = -1
+    all_nums = [0,1,2,3,4,5,6,7,8,9]
+
+    for row in range(0, 9):
+        all_nums.remove(input_matrix[row][colNum])
+        if input_matrix[row][colNum] == 0:
+            missing_loc = row
+    input_matrix[colNum][missing_loc] = all_nums[0]
+
 
 
 
@@ -116,7 +141,11 @@ def main1():
     global found_count
     
     input_matrix = import_input()
-    choices_matrix = return_empty_3d_matrix()
+    #choices_matrix = return_empty_3d_matrix()
+    choices_matrix_row = return_empty_1d_matrix()
+    choices_matrix_col = return_empty_1d_matrix()
+    choices_matrix_box = return_empty_2d_box_matrix()
+
     box_search_order = [[0,0],
                         [0,2],
                         [2,0],
@@ -130,31 +159,42 @@ def main1():
     
     for out_row in input_matrix:
         print(out_row)
+
+    # Have a starting point for the missing numbers    
+    for box in box_search_order: #for each box
+        choices_matrix_box[box[0]][box[1]] = check_box(3*box[0], 3*box[1])
+    for row in range(0, 9): #each row
+        choices_matrix_row[row] = check_row(row)
+    for col in range(0, 9): #each col
+        choices_matrix_col[col] = check_column(col)
+
+
     
-    for i in range(0, 5):
+    for i in range(0, 3):
         for box in box_search_order: #for each box
-            missing_box_set = check_box(3*box[0], 3*box[1])
+            #missing_box_set = check_box(3*box[0], 3*box[1])
             for row in range(3*box[0], 3 + (3*box[0])): #each row in box
-                missing_row_set = check_row(row)
-                if len(missing_row_set) < 1:
-                    continue
+                #missing_row_set = check_row(row)
+                #if len(choices_matrix_row[row]) < 1:
+                #    continue
                 for col in range(3*box[1], 3 + (3*box[1])): #each col item
                     if input_matrix[row][col] == 0:
-                        missing_col_set = check_column(col)
-                        choices_matrix[row][col] = missing_box_set.intersection(missing_row_set, missing_col_set)
-                        if len(choices_matrix[row][col]) == 1:
+                        buffSet = choices_matrix_box[box[0]][box[1]].intersection(choices_matrix_row[row], choices_matrix_col[col])
+                        if len(buffSet) == 1:
                             #print("found one!!")
                             found_count += 1
-                            buff = next(iter(choices_matrix[row][col]))
+                            buff = next(iter(buffSet))
                             input_matrix[row][col] = buff
-                            missing_box_set.remove(buff)
-                            missing_row_set.remove(buff)
-            if (len(missing_box_set) == 1):
-                solve_box(3*box[0], 3*box[1])
-                found_count += 1
-                missing_box_set.pop()
-            if (len(missing_box_set) == 0):
-                box_search_order.remove(box)
+                            choices_matrix_box[box[0]][box[1]].remove(buff)
+                            choices_matrix_row[row].remove(buff)
+                            choices_matrix_col[col].remove(buff)
+
+            # if (len(missing_box_set) == 1):
+            #     solve_box(3*box[0], 3*box[1])
+            #     found_count += 1
+            #     missing_box_set.pop()
+            # if (len(missing_box_set) == 0):
+            #     box_search_order.remove(box)
 
 
 
